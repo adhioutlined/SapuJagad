@@ -1,0 +1,14 @@
+#! /bin/bash
+
+for a in $(xe sr-list type=iscsi |grep uuid|cut -d':' -f2); do
+		for b in $(xe pbd-list sr-uuid=$a|awk 'NR==1'|cut -d':' -f2); do
+			for c in $(xe pbd-unplug uuid=$b && xe pbd-destroy uuid=$b); do
+			echo "PBD Unplugged & Destroyed Sir"
+			done	
+			
+		done
+done
+
+for a in $(xe sr-list type=iscsi |grep uuid|cut -d':' -f2); do
+	xe sr-forget uuid=$a && echo "SR FORGET"
+done
